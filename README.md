@@ -1,6 +1,8 @@
 Splunk-Pickaxe
 ==============
 
+[![Build Status](https://travis-ci.org/cerner/splunk-pickaxe.svg?branch=master)](https://travis-ci.org/cerner/splunk-pickaxe)
+
 A tool for syncing your repo of Splunk objects with a Splunk instance(s).
 
 This provides a development workflow for Splunk components (i.e. dashboards,
