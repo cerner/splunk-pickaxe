@@ -1,0 +1,10 @@
+namespace:
+  # The application name to create the splunk dashboards, alerts, reports, tags, etc...
+  app: my_splunk_app
+
+environments:
+  prod: https://logs-api.my-splunk.com
+
+# Used for all alerts/reports
+emails:
+  - my.email@domain.com

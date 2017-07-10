@@ -1,0 +1,5 @@
+name: My Report
+config:
+  # Search query of events used for report
+  search: >
+    index=my_index more search things

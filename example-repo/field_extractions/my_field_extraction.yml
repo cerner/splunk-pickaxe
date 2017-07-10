@@ -1,0 +1,6 @@
+name: my-field-extraction
+
+config:
+  stanza: source::thing
+  type: EXTRACT
+  value: Some Regex
