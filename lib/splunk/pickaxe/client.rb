@@ -31,6 +31,15 @@ module Splunk
         @tags.sync
         @field_extractions.sync
       end
+
+      def save_all
+        @alerts.save
+        @dashboards.save
+        @eventtypes.save
+        @reports.save
+        # splunk-sdk doesn't seem to support iterating tags
+        @field_extractions.save
+      end
     end
   end
 end

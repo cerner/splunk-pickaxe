@@ -86,6 +86,30 @@ module Splunk
         end
       end
 
+      def save
+        puts "Saving all #{entity_dir.capitalize}"
+
+        Splunk::Collection.new(service, splunk_resource)
+                          .map { |e| save_config e }
+      end
+
+      def save_config(splunk_entity)
+        file_path = entity_file_path splunk_entity
+
+        puts "- #{splunk_entity.name}"
+        if File.exist? file_path
+          puts '  Already exists'
+        else
+          File.write(file_path, {
+            'name' => splunk_entity.name,
+            'config' => splunk_entity_keys
+                          .map { |k| { k => splunk_entity.fetch(k) } }
+                          .reduce({}) { |memo, setting| memo.update(setting) }
+          }.to_yaml)
+          puts ' Created'
+        end
+      end
+
       def needs_update?(splunk_entity, entity)
         splunk_config(entity).each do |k, v|
           return true if splunk_entity[k] != v
@@ -99,12 +123,17 @@ module Splunk
         !entity['envs'].include?(environment)
       end
 
+      # Saved Splunk object's name
       def name(entity)
         entity['name']
       end
 
       def splunk_config(entity)
         entity['config']
+      end
+
+      def entity_file_name(entity)
+        "#{entity.name}.yml".gsub(/[^a-z0-9_\-. ]/i, '')
       end
 
       def entity_file_extensions
@@ -117,6 +146,16 @@ module Splunk
       end
 
       def entity_dir
+        # Must be implemented by child class
+        nil
+      end
+
+      def splunk_entity_keys
+        # Must be implemented by child class
+        nil
+      end
+
+      def entity_file_path
         # Must be implemented by child class
         nil
       end

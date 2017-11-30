@@ -9,3 +9,5 @@ group :test do
   gem 'rake', '~> 12.0'
   gem 'rspec', '~> 3.5'
 end
+
+gem 'pry-rails', :group => :development
