@@ -5,7 +5,7 @@ Splunk-Pickaxe
 
 A tool for serializing and syncing your repo of Splunk objects across Splunk instances.
 
-This provides a development workflow for Splunk components (e.g. dashboards,
+This provides a development workflow for Splunk components (e.g., dashboards,
 alerts, reports, etc) and an easy way to apply them consistently.
 
 Getting Started
