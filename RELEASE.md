@@ -4,10 +4,10 @@ This project is hosted on https://rubygems.org.  You can see it [here][project-u
 
 Releasing the project requires these steps:
 
-0. Set the version number in the code
-1. `gem build splunk-pickaxe.gemspec` and `gem push splunk-pickaxe*.gem`
-2. `git tag -a NEW-TAG -m MESSAGE ABOUT RELEASE` (be sure it follows [semver][semantic-versioning])
-3. Update `master` to a new minor version
+1. Ensure the code has built successfully and everything is ready to be released
+2. Close the current milestone associated to the release
+3. Install release gems (`bundle install ...`)
+4. Run release task `bundle exec rake release`
 
 Incorporate a GitHub [project release][github-release-url] as well.
 
