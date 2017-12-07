@@ -12,8 +12,9 @@ module Splunk
     class Client
       attr_reader :service, :alerts, :dashboards, :eventypes, :reports, :tags, :field_extractions
 
-      def initialize(service, environment, config)
+      def initialize(service, environment, config, args)
         @service = service
+        @args = args
 
         @alerts = Alerts.new service, environment, config
         @dashboards = Dashboards.new service, environment, config
@@ -33,12 +34,14 @@ module Splunk
       end
 
       def save_all
-        @alerts.save
-        @dashboards.save
-        @eventtypes.save
-        @reports.save
+        overwrite = @args.fetch(:overwrite, false)
+
+        @alerts.save overwrite
+        @dashboards.save overwrite
+        @eventtypes.save overwrite
+        @reports.save overwrite
         # splunk-sdk doesn't seem to support iterating tags
-        @field_extractions.save
+        @field_extractions.save overwrite
       end
     end
   end

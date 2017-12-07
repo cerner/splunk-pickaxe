@@ -7,8 +7,8 @@ require 'splunk/pickaxe/client'
 
 module Splunk
   module Pickaxe
-    def self.configure(environment, username, password, execution_path = Dir.getwd)
-      config = Config.load execution_path
+    def self.configure(environment, username, password, args)
+      config = Config.load(args.fetch(:repo_path, Dir.getwd))
 
       raise "Unknown environment [#{environment}]. Expected #{config.environments.keys}" unless config.environments.key?(environment)
 
@@ -24,7 +24,7 @@ module Splunk
         namespace: config.namespace
       )
 
-      Client.new service, environment.downcase, config
+      Client.new service, environment.downcase, config, args
     end
   end
 end

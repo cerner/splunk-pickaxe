@@ -86,27 +86,27 @@ module Splunk
         end
       end
 
-      def save
+      def save(overwrite)
         puts "Saving all #{entity_dir.capitalize}"
 
         Splunk::Collection.new(service, splunk_resource)
-                          .map { |e| save_config e }
+                          .map { |e| save_config e, overwrite }
       end
 
-      def save_config(splunk_entity)
+      def save_config(splunk_entity, overwrite)
         file_path = entity_file_path splunk_entity
 
         puts "- #{splunk_entity.name}"
-        if File.exist? file_path
-          puts '  Already exists'
-        else
+        if overwrite || !File.exist?(file_path)
           File.write(file_path, {
             'name' => splunk_entity.name,
             'config' => splunk_entity_keys
                           .map { |k| { k => splunk_entity.fetch(k) } }
                           .reduce({}) { |memo, setting| memo.update(setting) }
           }.to_yaml)
-          puts ' Created'
+          puts overwrite ? '  Overwritten' : ' Created'
+        else
+          puts '  Already exists'
         end
       end
 
