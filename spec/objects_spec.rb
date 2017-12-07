@@ -168,4 +168,106 @@ describe Splunk::Pickaxe::Objects do
       end
     end
   end
+
+  context '#save' do
+    let(:splunk_collection) { double 'splunk_collection' }
+    let(:splunk_entity1) { double 'splunk_entity1' }
+    let(:splunk_entity2) { double 'splunk_entity2' }
+
+    before do
+      allow(Splunk::Collection).to receive(:new).with(service, ['resource'])
+                                                .and_return(splunk_collection)
+      allow(splunk_collection).to receive(:map).and_yield(splunk_entity1)
+                                               .and_yield(splunk_entity2)
+    end
+
+    it 'calls save_config on every object in the collection' do
+      expect(subject).to receive(:save_config).with(splunk_entity1)
+      expect(subject).to receive(:save_config).with(splunk_entity2)
+
+      subject.save
+    end
+  end
+
+  context '#save_config' do
+    let(:entity) { double 'entity' }
+    let(:file_path) { double 'file_path' }
+    let(:entity_config) do
+      {
+        'action.email' => true, 
+        'action.email.sendresults' => true,
+        'action.email.to' => 'email@email.com'
+      }
+    end
+    let(:entity_name) { 'entity name' }
+
+    before do
+      allow(subject).to receive(:entity_file_path).and_return(file_path)
+      allow(entity).to receive(:name).and_return(entity_name)
+      allow(subject).to receive(:splunk_entity_keys).and_return(entity_config.keys)
+
+      entity_config.map { |k, v| allow(entity).to receive(:fetch).with(k).and_return(v) }
+    end
+
+    context 'when the file exists' do
+      it 'does not write the config' do
+        allow(File).to receive(:exist?).and_return true
+        expect(File).to_not receive(:write)
+
+        subject.save_config(entity)
+      end
+    end
+
+    context 'when the file does not exist' do
+      before do
+        allow(File).to receive(:exist?).and_return false
+        allow(File).to receive(:write)
+      end
+
+      it 'gets all entity keys' do
+        expect(subject).to receive(:splunk_entity_keys).and_return([])
+
+        subject.save_config(entity)
+      end
+
+      it 'fetches every value for each entity key from the entity' do
+        entity_config.each_key do |k|
+          expect(entity).to receive(:fetch).with(k)
+        end
+
+        subject.save_config(entity)
+      end
+
+      it 'combines all entity key/values and writes to yaml' do
+        expect(File).to receive(:write).with(file_path, {
+          'name' => entity_name,
+          'config' => entity_config
+        }.to_yaml)
+
+        subject.save_config(entity)
+      end
+    end
+  end
+
+  context '#entity_file_name' do
+    context 'when the passed entity has only valid characters' do
+      let(:entity) { double 'entity' }
+
+      it 'returns entity.name with an extension' do
+        allow(entity).to receive(:name).and_return('Entity0Name_-. ')
+
+        expect(subject.entity_file_name(entity)).to eq('Entity0Name_-. .yml')
+      end
+    end
+
+    context 'when the passed entity has invalid characters' do
+      let(:entity) { double 'entity' }
+
+      it 'returns entity.name without the invalid characters' do
+        allow(entity).to receive(:name).and_return('EntityName/@! ')
+
+        expect(subject.entity_file_name(entity)).to eq('EntityName .yml')
+      end
+    end
+  end
 end

@@ -3,9 +3,9 @@ Splunk-Pickaxe
 
 [![Build Status](https://travis-ci.org/cerner/splunk-pickaxe.svg?branch=master)](https://travis-ci.org/cerner/splunk-pickaxe)
 
-A tool for syncing your repo of Splunk objects with a Splunk instance(s).
+A tool for serializing and syncing your repo of Splunk objects across Splunk instances.
 
-This provides a development workflow for Splunk components (i.e. dashboards,
+This provides a development workflow for Splunk components (e.g., dashboards,
 alerts, reports, etc) and an easy way to apply them consistently.
 
 Getting Started
@@ -37,19 +37,22 @@ environments:
   ENVIRONMENT_NAME: SPLUNK_API_URL (i.e. https://search-head.my-splunk.com:8089)
 ```
 
-Add some Splunk objects. See [example repo](example-repo) or below for format.
+Add some Splunk objects; see [example repo](example-repo) or below for manually
+defining Splunk objects. Alternatively, to retrieve _all_ Splunk objects from
+an environment, run:
 
-Sync your repo with Splunk,
-
-    pickaxe sync ENVIRONMENT_NAME
+    pickaxe get ENVIONMENT_NAME
 
 Where `ENVIRONMENT_NAME` is the name of one of the environments configured in
 your `.pickaxe.yml`. These map to different Splunk instances.
 
-By default this command assumes the user running the command has a Splunk account
-and access to make these changes in the configured Splunk application. Your
-password will be requested when run. Alternatively you can make use of the
-options `--user` and `--password`.
+You may then modify any of these objects. Afterwards, sync your repo with Splunk:
+
+    pickaxe sync ENVIRONMENT_NAME
+
+By default these commands assume the user has a Splunk account and access to make these
+changes in the configured Splunk application. Your password will be requested when run.
+Alternatively you can make use of the options `--user` and `--password`.
 
 Splunk Objects
 --------------

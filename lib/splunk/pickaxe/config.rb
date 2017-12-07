@@ -59,7 +59,6 @@ module Splunk
 
         copy
       end
-
     end
   end
 end
