@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require "rubygems"
 require 'rspec/core/rake_task'
-require 'rubygems/tasks'
 
 REPO = 'cerner/splunk-pickaxe'
 
@@ -11,21 +10,28 @@ end
 
 task :default => [:test]
 
-task :release_gem do
+task :release do
   intialize_octokit
   puts "Releasing the gem ..."
 
   spec = Gem::Specification::load("splunk-pickaxe.gemspec")
+  version = spec.version.to_s
 
   # Update change log
   puts "Updating change log ..."
-  update_change_log spec.version
+  update_change_log version
   puts "Change log updated!"
 
-  Rake::Task["release"].invoke
+  puts "Publishing the gem ..."
+  run_command 'gem build splunk-pickaxe.gemspec'
+  run_command "gem push splunk-pickaxe-#{version}.gem"
+  puts "Gem published!"
 
-  update_version spec.version
-  Rake::Task["scm:push"].invoke
+  puts "Updating to next version ..."
+  update_version version
+  puts "Version updated!"
+
+  puts "Gem released!"
 end
 
 task :build_change_log do
@@ -149,6 +155,13 @@ def issue_type issue
   labels.join "/"
 end
 
+def run_command command
+  output = `#{command}`
+  unless $?.success?
+    raise "Command : [#{command}] failed.\nOutput : \n#{output}"
+  end
+end
+
 def update_version version
   version_splits = version.split('.')
   version_splits[1] = (version_splits[1].to_i + 1).to_s
@@ -161,4 +174,8 @@ def update_version version
     .join("\n")
 
   File.write('lib/splunk/pickaxe/version.rb', new_version_rb)
+
+  run_command "git add lib/splunk/pickaxe/version.rb"
+  run_command "git commit -m 'Updated version to #{next_version}'"
+  run_command "git push origin HEAD"
 end

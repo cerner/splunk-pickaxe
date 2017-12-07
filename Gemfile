@@ -14,5 +14,4 @@ gem 'pry-rails', :group => :development
 
 group :release do
   gem 'octokit'
-  gem 'rubygems-tasks'
 end
