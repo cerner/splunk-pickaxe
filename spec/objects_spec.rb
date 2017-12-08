@@ -173,6 +173,7 @@ describe Splunk::Pickaxe::Objects do
     let(:splunk_collection) { double 'splunk_collection' }
     let(:splunk_entity1) { double 'splunk_entity1' }
     let(:splunk_entity2) { double 'splunk_entity2' }
+    let(:overwrite) { double 'overwrite' }
 
     before do
       allow(Splunk::Collection).to receive(:new).with(service, ['resource'])
@@ -182,10 +183,17 @@ describe Splunk::Pickaxe::Objects do
     end
 
     it 'calls save_config on every object in the collection' do
-      expect(subject).to receive(:save_config).with(splunk_entity1)
-      expect(subject).to receive(:save_config).with(splunk_entity2)
+      expect(subject).to receive(:save_config).with(splunk_entity1, false)
+      expect(subject).to receive(:save_config).with(splunk_entity2, false)
 
-      subject.save
+      subject.save(false)
+    end
+
+    it 'passes the overwrite argument to every object in the collection' do
+      expect(subject).to receive(:save_config).with(splunk_entity1, overwrite)
+      expect(subject).to receive(:save_config).with(splunk_entity2, overwrite)
+
+      subject.save(overwrite)
     end
   end
 
@@ -210,11 +218,22 @@ describe Splunk::Pickaxe::Objects do
     end
 
     context 'when the file exists' do
-      it 'does not write the config' do
+      before do
         allow(File).to receive(:exist?).and_return true
+      end
+
+      it 'does not write the config' do
         expect(File).to_not receive(:write)
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
+      end
+
+      context 'and overwrite is true' do
+        it 'writes the config' do
+          expect(File).to receive(:write)
+
+          subject.save_config(entity, true)
+        end
       end
     end
 
@@ -227,7 +246,7 @@ describe Splunk::Pickaxe::Objects do
       it 'gets all entity keys' do
         expect(subject).to receive(:splunk_entity_keys).and_return([])
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
 
       it 'fetches every value for each entity key from the entity' do
@@ -235,7 +254,7 @@ describe Splunk::Pickaxe::Objects do
           expect(entity).to receive(:fetch).with(k)
         end
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
 
       it 'combines all entity key/values and writes to yaml' do
@@ -244,7 +263,7 @@ describe Splunk::Pickaxe::Objects do
           'config' => entity_config
         }.to_yaml)
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
     end
   end

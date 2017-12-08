@@ -62,34 +62,41 @@ describe Splunk::Pickaxe::FieldExtractions do
     before do
       allow(subject).to receive(:entity_file_path).and_return(file_path)
       allow(entity).to receive(:name).and_return('entity name')
+      allow(File).to receive(:exist?).and_return(false)
+      allow(File).to receive(:write)
+      allow(entity).to receive(:fetch).with('attribute')
+                                      .and_return(entity_config['attribute'])
+
+      subject.splunk_entity_keys.each do |k|
+        allow(entity).to receive(:fetch).with(k).and_return(entity_config[k])
+      end
     end
 
     context 'when the file exists' do
-      it 'does not write the config' do
-        allow(File).to receive(:exist?).and_return true
+      it 'will not write the config' do
+        allow(File).to receive(:exist?).and_return(true)
         expect(File).to_not receive(:write)
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
+      end
+
+      context 'and overwrite is true' do
+        it 'writes to config' do
+          allow(File).to receive(:exist?).and_return(true)
+          expect(File).to receive(:write)
+
+          subject.save_config(entity, true)
+        end
       end
     end
 
     context 'when the file does not exist' do
-      before do
-        allow(File).to receive(:exist?).and_return false
-        allow(File).to receive(:write)
-        allow(entity).to receive(:fetch).with('attribute')
-                                        .and_return(entity_config['attribute'])
-        subject.splunk_entity_keys.each do |k|
-          allow(entity).to receive(:fetch).with(k).and_return(entity_config[k])
-        end
-      end
-
       it 'calls fetch on all keys' do
         subject.splunk_entity_keys.each do |k|
           expect(entity).to receive(:fetch).with(k).and_return(entity_config[k])
         end
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
 
       it 'writes transformed config to the file' do
@@ -98,7 +105,7 @@ describe Splunk::Pickaxe::FieldExtractions do
           'config' => expected_entity_config
         }.to_yaml)
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
     end
   end
