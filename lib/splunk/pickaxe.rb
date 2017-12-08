@@ -4,6 +4,7 @@ require 'splunk-sdk-ruby'
 require 'uri'
 require 'splunk/pickaxe/config'
 require 'splunk/pickaxe/client'
+require 'splunk/pickaxe/cookie_proxy'
 
 module Splunk
   module Pickaxe
@@ -16,6 +17,7 @@ module Splunk
 
       puts "Connecting to splunk [#{uri}]"
       service = Splunk.connect(
+        proxy: CookieProxy,
         scheme: uri.scheme.to_sym,
         host: uri.host,
         port: uri.port,
