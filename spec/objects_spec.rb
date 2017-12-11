@@ -176,6 +176,8 @@ describe Splunk::Pickaxe::Objects do
     let(:overwrite) { double 'overwrite' }
 
     before do
+      entity_dir = File.join(execution_path, 'my-dir')
+      allow(Dir).to receive(:exist?).with(entity_dir).and_return(true)
       allow(Splunk::Collection).to receive(:new).with(service, ['resource'])
                                                 .and_return(splunk_collection)
       allow(splunk_collection).to receive(:map).and_yield(splunk_entity1)

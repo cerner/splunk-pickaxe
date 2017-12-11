@@ -89,6 +89,9 @@ module Splunk
       def save(overwrite)
         puts "Saving all #{entity_dir.capitalize}"
 
+        dir = File.join(pickaxe_config.execution_path, entity_dir)
+        Dir.mkdir dir unless Dir.exist? dir
+
         Splunk::Collection.new(service, splunk_resource)
                           .map { |e| save_config e, overwrite }
       end
