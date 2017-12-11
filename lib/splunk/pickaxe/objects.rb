@@ -98,13 +98,15 @@ module Splunk
 
         puts "- #{splunk_entity.name}"
         if overwrite || !File.exist?(file_path)
+          overwritten = overwrite && File.exist?(file_path)
+
           File.write(file_path, {
             'name' => splunk_entity.name,
             'config' => splunk_entity_keys
                           .map { |k| { k => splunk_entity.fetch(k) } }
                           .reduce({}) { |memo, setting| memo.update(setting) }
           }.to_yaml)
-          puts overwrite ? '  Overwritten' : ' Created'
+          puts overwritten ? '  Overwritten' : '  Created'
         else
           puts '  Already exists'
         end

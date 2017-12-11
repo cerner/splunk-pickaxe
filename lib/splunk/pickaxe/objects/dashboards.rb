@@ -46,8 +46,10 @@ module Splunk
 
         puts "- #{splunk_entity['label']}"
         if overwrite || !File.exist?(file_path)
+          overwritten = overwrite && File.exist?(file_path)
+
           File.write(file_path, splunk_entity['eai:data'])
-          puts overwrite ? '  Overwritten' : ' Created'
+          puts overwritten ? '  Overwritten' : '  Created'
         else
           puts '  Already exists'
         end
