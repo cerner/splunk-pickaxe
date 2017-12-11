@@ -25,7 +25,13 @@ task :release do
   puts "Publishing the gem ..."
   run_command 'gem build splunk-pickaxe.gemspec'
   run_command "gem push splunk-pickaxe-#{version}.gem"
+  run_command "rm -f splunk-pickaxe-#{version}.gem"
   puts "Gem published!"
+
+  puts "Creating git tag ..."
+  run_command "git tag #{version}"
+  run_command "git push origin #{version}"
+  puts "Git tag created!"
 
   puts "Updating to next version ..."
   update_version version
