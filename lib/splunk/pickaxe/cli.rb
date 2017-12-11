@@ -49,7 +49,6 @@ module Splunk
 
         user = options[:user] || Etc.getlogin
         password = options[:password] || cli.ask('Password: ') { |o| o.echo = '*' }
-        execution_path = options[:repo_path] || Dir.getwd
 
         pickaxe = Pickaxe.configure environment, user, password, options
         pickaxe.sync_all
