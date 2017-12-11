@@ -13,7 +13,7 @@ module Splunk
         },
         'environments' => {
         },
-        'emails' => []
+        'emails' => [],
       }.freeze
 
       def self.load(execution_path)

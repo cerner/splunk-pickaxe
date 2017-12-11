@@ -41,15 +41,17 @@ module Splunk
         ['.xml']
       end
 
-      def save_config(splunk_entity)
+      def save_config(splunk_entity, overwrite)
         file_path = entity_file_path splunk_entity
 
         puts "- #{splunk_entity['label']}"
-        if File.exist? file_path
-          puts '  Already exists'
-        else
+        if overwrite || !File.exist?(file_path)
+          overwritten = overwrite && File.exist?(file_path)
+
           File.write(file_path, splunk_entity['eai:data'])
-          puts '  Created'
+          puts overwritten ? '  Overwritten' : '  Created'
+        else
+          puts '  Already exists'
         end
       end
     end

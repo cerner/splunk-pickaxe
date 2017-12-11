@@ -49,9 +49,8 @@ module Splunk
 
         user = options[:user] || Etc.getlogin
         password = options[:password] || cli.ask('Password: ') { |o| o.echo = '*' }
-        execution_path = options[:repo_path] || Dir.getwd
 
-        pickaxe = Pickaxe.configure environment, user, password, execution_path
+        pickaxe = Pickaxe.configure environment, user, password, options
         pickaxe.sync_all
       end
 
@@ -59,14 +58,14 @@ module Splunk
       option :user, type: :string, desc: 'The user to login to splunk with. If this is not provide it will use the current user'
       option :password, type: :string, desc: 'The password to login to splunk with. If this is not provided it will ask for a password'
       option :repo_path, type: :string, desc: 'The path to the repo. If this is not specified it is assumed you are executing from within the repo'
+      option :overwrite, type: :boolean, desc: 'Overwrite any local Splunk objects which differ from remote objects with the same name.'
       def save(environment)
         cli = HighLine.new
 
         user = options[:user] || Etc.getlogin
         password = options[:password] || cli.ask('Password: ') { |o| o.echo = '*' }
-        execution_path = options[:repo_path] || Dir.getwd
 
-        pickaxe = Pickaxe.configure environment, user, password, execution_path
+        pickaxe = Pickaxe.configure environment, user, password, options
         pickaxe.save_all
       end
     end

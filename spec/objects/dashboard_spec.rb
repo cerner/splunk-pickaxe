@@ -84,6 +84,7 @@ describe Splunk::Pickaxe::Dashboards do
       allow(subject).to receive(:entity_file_path).and_return(file_path)
       allow(entity).to receive(:[]).with('label').and_return('entity name')
       allow(entity).to receive(:[]).with('eai:data').and_return(entity_config)
+      allow(File).to receive(:exist?).and_return true
     end
 
     context 'when the file exists' do
@@ -91,7 +92,15 @@ describe Splunk::Pickaxe::Dashboards do
         allow(File).to receive(:exist?).and_return true
         expect(File).to_not receive(:write)
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
+      end
+
+      context 'and overwrite is passed' do
+        it 'writes the config' do
+          expect(File).to receive(:write)
+
+          subject.save_config(entity, true)
+        end
       end
     end
 
@@ -104,13 +113,13 @@ describe Splunk::Pickaxe::Dashboards do
       it 'gets eai:data from the entity' do
         expect(entity).to receive(:[]).with('eai:data').and_return({})
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
 
       it 'writes eai:data to the file' do
         expect(File).to receive(:write).with(file_path, entity_config)
 
-        subject.save_config(entity)
+        subject.save_config(entity, false)
       end
     end
   end

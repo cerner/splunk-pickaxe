@@ -47,13 +47,11 @@ module Splunk
         splunk_entity['value'] != splunk_config(entity)['value']
       end
 
-      def save_config(splunk_entity)
+      def save_config(splunk_entity, overwrite)
         file_path = entity_file_path splunk_entity
 
         puts "- #{splunk_entity.name}"
-        if File.exist? file_path
-          puts '  Already exists'
-        else
+        if overwrite || !File.exist?(file_path)
           config = splunk_entity_keys
                    .map { |k| { k => splunk_entity.fetch(k) } }
                    .reduce({}) { |memo, setting| memo.update(setting) }
@@ -64,11 +62,14 @@ module Splunk
           config['type'] = splunk_entity.fetch('attribute').split('-').first
           config['value'].gsub!(/, /, ',')
 
+          overwritten = overwrite && File.exist?(file_path)
           File.write(file_path, {
             'name' => splunk_entity.name,
             'config' => config
           }.to_yaml)
-          puts ' Created'
+          puts overwritten ? '  Overwritten' : '  Created'
+        else
+          puts '  Already exists'
         end
       end
 

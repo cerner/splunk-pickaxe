@@ -4,29 +4,31 @@ describe Splunk::Pickaxe::Client do
   let(:service) { double 'service' }
   let(:environment) { 'my-environment' }
   let(:config) { double 'config' }
-  let(:subject) { Splunk::Pickaxe::Client }
   let(:class_to_double) do
     Hash[splunk_object_classes.collect { |clazz| [clazz, double] }]
   end
+  subject { Splunk::Pickaxe::Client }
 
-  before(:each) do
+  before do
     splunk_object_classes.each do |clazz|
       allow(clazz).to receive(:new).and_return(class_to_double[clazz])
     end
   end
 
   context '#new' do
+    let(:args) { { user: 'user', password: 'pass' } }
     it 'calls #new on all objects' do
       splunk_object_classes.each do |clazz|
         expect(clazz).to receive(:new).with(service, environment, config)
       end
 
-      subject.new(service, environment, config)
+      subject.new(service, environment, config, args)
     end
   end
 
   context '#sync_all' do
-    let(:subject) { Splunk::Pickaxe::Client.new(service, environment, config) }
+    let(:args) { { user: 'user', password: 'pass' } }
+    subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
 
     it 'calls #sync on all objects' do
       splunk_object_classes.each do |clazz|
@@ -38,15 +40,42 @@ describe Splunk::Pickaxe::Client do
   end
 
   context '#save_all' do
-    let(:subject) { Splunk::Pickaxe::Client.new(service, environment, config) }
+    let(:args) { { user: 'user', password: 'pass', overwrite: false } }
+    let(:classes) { splunk_object_classes.reject { |clazz| clazz == Splunk::Pickaxe::Tags } }
+    subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
 
     it 'calls #save on all objects except tag' do
-      splunk_object_classes
-        .reject { |clazz| clazz == Splunk::Pickaxe::Tags }.each do |clazz|
-        expect(class_to_double[clazz]).to receive(:save)
+      classes.each do |clazz|
+        expect(class_to_double[clazz]).to receive(:save).with(false)
       end
 
       subject.save_all
+    end
+
+    context 'when overwrite is not in args' do
+      let(:args) { { user: 'user', password: 'pass' } }
+      subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
+
+      it 'calls #save with false' do
+        classes.each do |clazz|
+          expect(class_to_double[clazz]).to receive(:save).with(false)
+        end
+
+        subject.save_all
+      end
+
+      context 'when overwrite is in args' do
+        let(:args) { { user: 'user', password: 'pass', overwrite: true } }
+        subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
+
+        it 'calls #save with overwrite\'s value' do
+        classes.each do |clazz|
+          expect(class_to_double[clazz]).to receive(:save).with(true)
+        end
+
+        subject.save_all
+        end
+      end
     end
   end
 end
