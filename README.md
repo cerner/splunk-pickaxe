@@ -43,7 +43,7 @@ Add some Splunk objects; see [example repo](example-repo) or below for manually
 defining Splunk objects. Alternatively, to retrieve _all_ Splunk objects from
 an environment, run:
 
-    pickaxe get ENVIONMENT_NAME
+    pickaxe save ENVIRONMENT_NAME
 
 Where `ENVIRONMENT_NAME` is the name of one of the environments configured in
 your `.pickaxe.yml`. These map to different Splunk instances.
