@@ -204,13 +204,69 @@ environments.
 Config
 ------
 
-The `.pickaxe.yml` file contains the config for your Splunk resources. You can add,
+The `.pickaxe.yml` file contains the config for your Splunk resources and should
+look like this,
 
-* `environments` : A hash of environment names (key) to Splunk url
-* `namespace`:
-    * `app`: The name of your Splunk application to deploy objects to
-    * `sharing`: The sharing settings for the Splunk resources (default=`app`)
-* `emails`: An array of emails used for all reports and alerts (default=`[]`)
+```yaml
+namespace:
+  # The application name to create the splunk dashboards, alerts, reports, tags, etc...
+  app: my_splunk_app
+
+environments:
+  dev:
+    url: https://logs-api.dev.my-splunk.com
+  staging:
+    url: https://logs-api.staging.my-splunk.com
+  prod:
+    url: https://logs-api.prod.my-splunk.com
+    # Optional and will default to the root emails config
+    emails:
+      - my.email@domain.com
+
+# Used for any environments that don't specify emails config
+emails:
+  - my.email@domain.com
+```
+
+### Backwards Compatibility
+
+In previous version the config used to look like this,
+
+```yaml
+namespace:
+  app: my_splunk_app
+
+environments:
+  dev: https://logs-api.dev.my-splunk.com
+  staging: https://logs-api.staging.my-splunk.com
+  prod: https://logs-api.prod.my-splunk.com
+
+emails:
+  - my.email@domain.com
+```
+
+Specifically the value for each environment was a String that was the URL for
+the Splunk API. The new config format has the environment value as a Hash like
+this,
+
+```yaml
+namespace:
+  app: my_splunk_app
+
+environments:
+  dev:
+    url: https://logs-api.dev.my-splunk.com
+  staging:
+    url: https://logs-api.staging.my-splunk.com
+  prod:
+    url: https://logs-api.prod.my-splunk.com
+
+emails:
+  - my.email@domain.com
+```
+
+The previous format is still supported but deprecated and will be removed in the
+future.
 
 Contributing
 ------------

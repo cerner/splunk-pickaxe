@@ -9,11 +9,11 @@ require 'splunk/pickaxe/cookie_proxy'
 module Splunk
   module Pickaxe
     def self.configure(environment, username, password, args)
-      config = Config.load(args.fetch(:repo_path, Dir.getwd))
+      config = Config.load(environment, args.fetch(:repo_path, Dir.getwd))
 
       raise "Unknown environment [#{environment}]. Expected #{config.environments.keys}" unless config.environments.key?(environment)
 
-      uri = URI(config.environments[environment])
+      uri = URI(config.url)
 
       puts "Connecting to splunk [#{uri}]"
       service = Splunk.connect(

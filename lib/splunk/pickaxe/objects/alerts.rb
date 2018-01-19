@@ -42,7 +42,7 @@ module Splunk
       def alert_defaults
         {
           # Who to email
-          'action.email.to' => pickaxe_config.config['emails'].join(','),
+          'action.email.to' => pickaxe_config.emails.join(','),
 
           # How often to run alert (every hour)
           'cron_schedule' => '0 * * * *',

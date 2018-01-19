@@ -34,9 +34,10 @@ module Splunk
           f.puts 'namespace:'
           f.puts '  app: TODO'
           f.puts 'environments:'
-          f.puts '  MY_ENV: SPLUNK_API_URL'
-          f.puts 'emails:'
-          f.puts '  - my.email@domain.com'
+          f.puts '  MY_ENV:'
+          f.puts '    url: SPLUNK_API_URL'
+          f.puts '    emails:'
+          f.puts '      - my.email@domain.com'
         end
       end
 
