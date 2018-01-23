@@ -3,8 +3,16 @@ namespace:
   app: my_splunk_app
 
 environments:
-  prod: https://logs-api.my-splunk.com
+  dev:
+    url: https://logs-api.dev.my-splunk.com
+  staging:
+    url: https://logs-api.staging.my-splunk.com
+  prod:
+    url: https://logs-api.prod.my-splunk.com
+    # emails is optional and will default to the root emails config if not specified
+    emails:
+      - my.email@domain.com
 
-# Used for all alerts/reports
+# Used for any environments that don't specify emails config
 emails:
   - my.email@domain.com

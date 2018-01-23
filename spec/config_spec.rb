@@ -2,9 +2,13 @@ require 'spec_helper'
 
 describe Splunk::Pickaxe::Config do
 
+  let(:environment) { 'my-environment' }
+  let(:url) { 'https://logs-api.dev.my-splunk.com' }
   let(:execution_path) { 'my-execution-path' }
-  let(:yaml_config) { {'environments' => {'my-environment' => 'my-splunk'}, 'namespace' => {'app' => 'my-app'} } }
-  let(:config) { Splunk::Pickaxe::Config.load(execution_path) }
+  let(:my_app) { 'my-app' }
+  let(:sharing) { 'app' }
+  let(:yaml_config) { {'environments' => {'my-environment' => {'url' => url}}, 'namespace' => {sharing => my_app} } }
+  let(:config) { Splunk::Pickaxe::Config.load(environment, execution_path) }
 
   before(:each) do
     config_path = File.join(execution_path, Splunk::Pickaxe::Config::CONFIG_FILE)
@@ -13,13 +17,42 @@ describe Splunk::Pickaxe::Config do
   end
 
   context '#load' do
+    context 'using old config format' do
+      let(:yaml_config) { {'environments' => {'my-environment' => url}, 'namespace' => {sharing => my_app} } }
+
+      it 'should build config object' do
+        expect(config.execution_path).to eq(File.join(execution_path))
+        expect(config.emails).to eq([])
+        expect(config.url).to eq(url)
+        expect(config.environment).to eq(environment)
+        expect(config.namespace).to eq(Splunk.namespace(:sharing => sharing, :app => my_app))
+      end
+    end
+
     it 'should build config object' do
       expect(config.execution_path).to eq(File.join(execution_path))
-      expect(config.config).to eq({'namespace' => {'sharing' => 'app',
-        'app' => 'my-app'}, 'environments' => {'my-environment' => 'my-splunk'},
-        'emails' => []})
-      expect(config.environments).to eq(yaml_config['environments'])
-      expect(config.namespace).to eq(Splunk.namespace(:sharing => 'app', :app => 'my-app'))
+      expect(config.emails).to eq([])
+      expect(config.url).to eq(url)
+      expect(config.environment).to eq(environment)
+      expect(config.namespace).to eq(Splunk.namespace(:sharing => sharing, :app => my_app))
+    end
+
+    context 'with environment emails specified' do
+      let(:yaml_config) { {'environments' => {'my-environment' => {'url' => url, 'emails' => ['my@email.com']}},
+        'namespace' => {sharing => my_app} } }
+
+      it 'should use environment specific emails' do
+        expect(config.emails).to eq(['my@email.com'])
+      end
+    end
+
+    context 'without environment emails specified and global emails set' do
+      let(:yaml_config) { {'environments' => {'my-environment' => {'url' => url,}},
+        'namespace' => {sharing => my_app}, 'emails' => ['my@email.com'] } }
+
+      it 'should use environment specific emails' do
+        expect(config.emails).to eq(['my@email.com'])
+      end
     end
 
     context 'without namespace / app' do
@@ -29,8 +62,8 @@ describe Splunk::Pickaxe::Config do
       end
     end
 
-    context 'with no environments' do
-      let(:yaml_config) { {'namespace' => {'app' => 'my-app'}} }
+    context 'without the environment' do
+      let(:environment) { 'does-not-exist' }
       it 'should raise an error' do
         expect { config }.to raise_error(StandardError)
       end
