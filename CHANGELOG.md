@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.3.0 - 01-23-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=4&state=closed)
+----------------------------------------------------------------------------------------------
+
+  * [Feature] [Issue-5](https://github.com/cerner/splunk-pickaxe/issues/5) : Allow email to be configured per environment
+
 [2.2.0 - 12-11-2017](https://github.com/cerner/splunk-pickaxe/issues?milestone=3&state=closed)
 ----------------------------------------------------------------------------------------------
 
