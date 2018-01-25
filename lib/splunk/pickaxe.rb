@@ -11,8 +11,6 @@ module Splunk
     def self.configure(environment, username, password, args)
       config = Config.load(environment, args.fetch(:repo_path, Dir.getwd))
 
-      raise "Unknown environment [#{environment}]. Expected #{config.environments.keys}" unless config.environments.key?(environment)
-
       uri = URI(config.url)
 
       puts "Connecting to splunk [#{uri}]"
