@@ -170,7 +170,13 @@ end
 
 def update_version version
   version_splits = version.split('.')
+
+  # Bump minor version up one
   version_splits[1] = (version_splits[1].to_i + 1).to_s
+
+  # Ensure fix version is reset
+  version_splits[2] = 0
+  
   next_version = version_splits.join('.')
 
   version_rb = IO.read('lib/splunk/pickaxe/version.rb')
