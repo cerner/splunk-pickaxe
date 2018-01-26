@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.3.1 - 01-26-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=6&state=closed)
+----------------------------------------------------------------------------------------------
+
+  * [Bug] [Issue-11](https://github.com/cerner/splunk-pickaxe/issues/11) : Remove unnecessary environment check (fixes #10)
+
 [2.3.0 - 01-23-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=4&state=closed)
 ----------------------------------------------------------------------------------------------
 
