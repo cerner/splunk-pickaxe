@@ -2,6 +2,6 @@
 
 module Splunk
   module Pickaxe
-    VERSION = '2.4.0'
+    VERSION = '2.3.1'
   end
 end
