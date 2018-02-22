@@ -29,6 +29,13 @@ describe Splunk::Pickaxe::Objects do
   context '#sync' do
 
     let(:entity) { {'name' => 'entity-name', 'config' => {'key' => 'value'}} }
+    let(:entity_yaml) do
+      %{
+        name: entity-name
+        config:
+          key: <%= 'value' %>
+      }
+    end
     let(:splunk_collection) { double 'splunk_collection' }
 
     before(:each) do
@@ -37,7 +44,7 @@ describe Splunk::Pickaxe::Objects do
       allow(Dir).to receive(:exist?).with(entity_dir).and_return(true)
       allow(Dir).to receive(:entries).with(entity_dir).and_return(['my-entry.yml'])
       allow(File).to receive(:file?).with(entity_path).and_return(true)
-      allow(YAML).to receive(:load_file).with(entity_path).and_return(entity)
+      allow(File).to receive(:read).with(entity_path).and_return(entity_yaml)
       allow(Splunk::Collection).to receive(:new).with(service, ['resource']).and_return(splunk_collection)
     end
 
@@ -204,7 +211,7 @@ describe Splunk::Pickaxe::Objects do
     let(:file_path) { double 'file_path' }
     let(:entity_config) do
       {
-        'action.email' => true, 
+        'action.email' => true,
         'action.email.sendresults' => true,
         'action.email.to' => 'email@email.com'
       }

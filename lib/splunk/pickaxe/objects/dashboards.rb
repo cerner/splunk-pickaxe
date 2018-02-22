@@ -32,7 +32,7 @@ module Splunk
         {
           'name' => File.basename(file_path, '.xml'),
           'config' => {
-            'eai:data' => IO.read(file_path)
+            'eai:data' => ERB.new(IO.read(file_path)).result
           }
         }
       end

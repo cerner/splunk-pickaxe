@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'byebug'
+
 group :test do
   gem 'bundler', '~> 1.14'
   gem 'rake', '~> 12.0'

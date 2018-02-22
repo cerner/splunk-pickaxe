@@ -44,7 +44,8 @@ describe Splunk::Pickaxe::Dashboards do
   context '#config' do
     let(:file_path) { double 'file_path' }
     let(:basename) { 'basename' }
-    let(:file_contents) { 'file contents' }
+    let(:file_contents) { %{file <%= 'content' %>} }
+    let(:interpolated_file_contents) { 'file content' }
 
     before do
       allow(File).to receive(:basename).and_return(basename)
@@ -63,7 +64,7 @@ describe Splunk::Pickaxe::Dashboards do
 
     it 'returns a hash with config read from file_path' do
       expect(subject.config(file_path).values_at('config')).to include(
-        'eai:data' => file_contents
+        'eai:data' => interpolated_file_contents
       )
     end
   end

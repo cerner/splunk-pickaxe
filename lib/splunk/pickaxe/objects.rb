@@ -31,6 +31,7 @@ module Splunk
           next unless File.file?(entity_path) && entity_file_extensions.any? { |ext| entity_path.end_with?(ext) }
 
           entity = config(entity_path)
+          puts entity
           entity_name = name(entity)
 
           puts "- #{entity_name}"
@@ -62,7 +63,7 @@ module Splunk
       end
 
       def config(file_path)
-        YAML.load_file file_path
+        YAML.safe_load(ERB.new(File.read(file_path)).result, [], [], true)
       end
 
       def create(entity)

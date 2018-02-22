@@ -201,6 +201,16 @@ envs:
 By default if `envs` is not provided the object will be imported to all
 environments.
 
+All Splunk objects are processed through ERB before being loaded to allow for dynamic configuration.
+
+```yaml
+name: ALERT NAME
+config:
+  # Search query of events used to trigger alert
+  search: >
+    MY SEARCH USING <%= ENV['SPLUNK_INDEX'] || 'default_index' %>
+```
+
 Config
 ------
 
@@ -227,6 +237,8 @@ environments:
 emails:
   - my.email@domain.com
 ```
+
+
 
 ### Backwards Compatibility
 
