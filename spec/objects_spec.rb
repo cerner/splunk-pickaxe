@@ -7,6 +7,7 @@ describe Splunk::Pickaxe::Objects do
   let(:environment) { 'my-environment' }
   let(:pickaxe_config) { double 'pickaxe_config' }
   let(:execution_path) { 'execution_path' }
+  let(:env_config) { { 'index_name' => 'value' } }
 
   class TestObjects  < Splunk::Pickaxe::Objects
     def splunk_resource
@@ -23,6 +24,7 @@ describe Splunk::Pickaxe::Objects do
   before(:each) do
     allow(service).to receive(:namespace).and_return(service_namespace)
     allow(pickaxe_config).to receive(:execution_path).and_return(execution_path)
+    allow(pickaxe_config).to receive(:env_config).and_return(env_config)
     allow(subject).to receive(:puts).with(any_args)
   end
 
@@ -33,7 +35,7 @@ describe Splunk::Pickaxe::Objects do
       %{
         name: entity-name
         config:
-          key: <%= 'value' %>
+          key: <%= index_name %>
       }
     end
     let(:splunk_collection) { double 'splunk_collection' }

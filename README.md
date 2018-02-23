@@ -36,7 +36,8 @@ namespace:
   app: MY_SPLUNK_APP
 
 environments:
-  ENVIRONMENT_NAME: SPLUNK_API_URL (i.e. https://search-head.my-splunk.com:8089)
+  ENVIRONMENT_NAME:
+    url: SPLUNK_API_URL (i.e. https://search-head.my-splunk.com:8089)
 ```
 
 Add some Splunk objects; see [example repo](example-repo) or below for manually
@@ -201,14 +202,38 @@ envs:
 By default if `envs` is not provided the object will be imported to all
 environments.
 
-All Splunk objects are processed through ERB before being loaded to allow for dynamic configuration.
+All Splunk objects are processed through ERB before being loaded to allow for dynamic configuration.  The values from `.pickaxe.yml` provided within the environment configuration appropriate to the executed command will be added to the ERB binding during the rendering process.
 
+.pickaxe.yml
+```yaml
+namespace:
+  # The application in which to create the Splunk knowledge objects
+  app: MY_SPLUNK_APP
+
+environments:
+  ENVIRONMENT_NAME:
+    url: SPLUNK_API_URL (i.e. https://search-head.my-splunk.com:8089)
+    index_name: my_index
+```
+
+my_alert.yml
 ```yaml
 name: ALERT NAME
 config:
   # Search query of events used to trigger alert
   search: >
-    MY SEARCH USING <%= ENV['SPLUNK_INDEX'] || 'default_index' %>
+    MY SEARCH USING <%= index_name %>
+```
+
+Environment variables from the OS can also be referenced.
+
+my_alert.yml
+```yaml
+name: ALERT NAME
+config:
+  # Search query of events used to trigger alert
+  search: >
+    MY SEARCH USING <%= ENV['INDEX_NAME'] %>
 ```
 
 Config
@@ -237,7 +262,6 @@ environments:
 emails:
   - my.email@domain.com
 ```
-
 
 
 ### Backwards Compatibility

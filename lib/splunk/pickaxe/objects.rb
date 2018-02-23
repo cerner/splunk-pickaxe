@@ -2,6 +2,7 @@
 
 require 'splunk-sdk-ruby'
 require 'yaml'
+require_relative 'erb_with_binding'
 
 # Base class for syncing splunk objects (dashboards, alerts, etc...)
 module Splunk
@@ -63,7 +64,9 @@ module Splunk
       end
 
       def config(file_path)
-        YAML.safe_load(ERB.new(File.read(file_path)).result, [], [], true)
+        template = File.read(file_path)
+        yaml_contents = ERBWithBinding::render_from_hash(template, pickaxe_config.env_config)
+        YAML.safe_load(yaml_contents, [], [], true)
       end
 
       def create(entity)

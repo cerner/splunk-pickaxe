@@ -8,10 +8,12 @@ describe Splunk::Pickaxe::Dashboards do
   let(:execution_path) { 'execution_path' }
   let(:subject) { Splunk::Pickaxe::Dashboards.new service, environment, pickaxe_config }
   let(:entity) { double 'entity' }
+  let(:env_config) { { 'content' => 'content' } }
 
   before do
     allow(service).to receive(:namespace).and_return(service_namespace)
     allow(pickaxe_config).to receive(:execution_path).and_return(execution_path)
+    allow(pickaxe_config).to receive(:env_config).and_return(env_config)
     allow(subject).to receive(:puts).with(any_args)
   end
 
@@ -44,7 +46,7 @@ describe Splunk::Pickaxe::Dashboards do
   context '#config' do
     let(:file_path) { double 'file_path' }
     let(:basename) { 'basename' }
-    let(:file_contents) { %{file <%= 'content' %>} }
+    let(:file_contents) { %{file <%= content %>} }
     let(:interpolated_file_contents) { 'file content' }
 
     before do

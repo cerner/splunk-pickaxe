@@ -24,7 +24,7 @@ module Splunk
         Config.new deep_merge(DEFAULTS, YAML.load_file(config_path)), environment, execution_path
       end
 
-      attr_reader :namespace, :environment, :execution_path, :emails, :url
+      attr_reader :namespace, :environment, :execution_path, :emails, :url, :env_config
 
       def initialize(config, environment, execution_path)
         raise "Config must have a 'namespace / app' config" unless config['namespace'].key?('app')
@@ -40,10 +40,12 @@ module Splunk
           puts "Your .pickaxe.yml is using a deprecated config format. Check https://github.com/cerner/splunk-pickaxe#backwards-compatibility for details"
           @emails = config['emails']
           @url = env_config
+          @env_config = { 'url' => @url, 'emails' => @emails }
         elsif env_config.is_a?(Hash)
           raise "url config is required for environment [#{environment}]" unless env_config.has_key?('url')
           @url = env_config['url']
           @emails = env_config.has_key?('emails') ? env_config['emails'] : config['emails']
+          @env_config = env_config
         else
           raise "Unexepcted value for environment [#{environment}] config. Expected String or Hash, saw #{config['environments'][environment]}"
         end
