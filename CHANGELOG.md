@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.4.0 - 02-26-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=5&state=closed)
+----------------------------------------------------------------------------------------------
+
+  * [Feature] [Issue-12](https://github.com/cerner/splunk-pickaxe/issues/12) : Process the Splunk objects with ERB to allow for dynamic configuration
+
 [2.3.1 - 01-26-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=6&state=closed)
 ----------------------------------------------------------------------------------------------
 
