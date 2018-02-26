@@ -7,6 +7,7 @@ describe Splunk::Pickaxe::Objects do
   let(:environment) { 'my-environment' }
   let(:pickaxe_config) { double 'pickaxe_config' }
   let(:execution_path) { 'execution_path' }
+  let(:env_config) { { 'index_name' => 'value' } }
 
   class TestObjects  < Splunk::Pickaxe::Objects
     def splunk_resource
@@ -23,12 +24,20 @@ describe Splunk::Pickaxe::Objects do
   before(:each) do
     allow(service).to receive(:namespace).and_return(service_namespace)
     allow(pickaxe_config).to receive(:execution_path).and_return(execution_path)
+    allow(pickaxe_config).to receive(:env_config).and_return(env_config)
     allow(subject).to receive(:puts).with(any_args)
   end
 
   context '#sync' do
 
     let(:entity) { {'name' => 'entity-name', 'config' => {'key' => 'value'}} }
+    let(:entity_yaml) do
+      %{
+        name: entity-name
+        config:
+          key: <%= index_name %>
+      }
+    end
     let(:splunk_collection) { double 'splunk_collection' }
 
     before(:each) do
@@ -37,7 +46,7 @@ describe Splunk::Pickaxe::Objects do
       allow(Dir).to receive(:exist?).with(entity_dir).and_return(true)
       allow(Dir).to receive(:entries).with(entity_dir).and_return(['my-entry.yml'])
       allow(File).to receive(:file?).with(entity_path).and_return(true)
-      allow(YAML).to receive(:load_file).with(entity_path).and_return(entity)
+      allow(File).to receive(:read).with(entity_path).and_return(entity_yaml)
       allow(Splunk::Collection).to receive(:new).with(service, ['resource']).and_return(splunk_collection)
     end
 
@@ -204,7 +213,7 @@ describe Splunk::Pickaxe::Objects do
     let(:file_path) { double 'file_path' }
     let(:entity_config) do
       {
-        'action.email' => true, 
+        'action.email' => true,
         'action.email.sendresults' => true,
         'action.email.to' => 'email@email.com'
       }

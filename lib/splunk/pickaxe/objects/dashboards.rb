@@ -28,11 +28,14 @@ module Splunk
       end
 
       def config(file_path)
+        template = IO.read(file_path)
+        xml_content = ERBWithBinding::render_from_hash(template, pickaxe_config.env_config)
+
         # Dashboards don't have many properties just name and source XML
         {
           'name' => File.basename(file_path, '.xml'),
           'config' => {
-            'eai:data' => IO.read(file_path)
+            'eai:data' => xml_content
           }
         }
       end
