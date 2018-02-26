@@ -32,7 +32,6 @@ module Splunk
           next unless File.file?(entity_path) && entity_file_extensions.any? { |ext| entity_path.end_with?(ext) }
 
           entity = config(entity_path)
-          puts entity
           entity_name = name(entity)
 
           puts "- #{entity_name}"
