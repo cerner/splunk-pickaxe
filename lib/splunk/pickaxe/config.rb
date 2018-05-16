@@ -47,7 +47,7 @@ module Splunk
           @emails = env_config.has_key?('emails') ? env_config['emails'] : config['emails']
           @env_config = env_config
         else
-          raise "Unexepcted value for environment [#{environment}] config. Expected String or Hash, saw #{config['environments'][environment]}"
+          raise "Unexpected value for environment [#{environment}] config. Expected String or Hash, saw #{config['environments'][environment]}"
         end
 
         # Convert namespace config hash to hash with symbols for keys
