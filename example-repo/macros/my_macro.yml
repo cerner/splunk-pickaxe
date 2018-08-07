@@ -1,0 +1,4 @@
+name: my_macro
+
+config:
+  definition: index=my_index search things
