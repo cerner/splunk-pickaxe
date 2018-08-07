@@ -65,6 +65,7 @@ Currently the following objects are supported,
  * [alerts](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTsearch#saved.2Fsearches)
  * [dashboards](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTknowledge#data.2Fui.2Fviews.2F.7Bname.7D)
  * [eventtypes](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTknowledge#saved.2Feventtypes)
+ * [macros](http://docs.splunk.com/Documentation/Splunk/7.1.2/Knowledge/Usesearchmacros)
  * [reports](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTsearch#saved.2Fsearches)
  * [tags](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTknowledge#search.2Ftags.2F.7Btag_name.7D)
  * [field_extractions](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTknowledge#data.2Fprops.2Fextractions)
@@ -121,6 +122,18 @@ config:
   priority: <1-10> 1 is highest priority and 10 is lowest
   tags: <string> Enter a comma-separated list of tags
   ...
+```
+
+### Macros
+
+To add a new macro create a new `macro.yml` file under `macros`.
+The name of the file should be the name of the macro. If the file is
+`my_macro.yml`, this means the name is `my_macro`.
+
+```yaml
+name: MACRO_NAME
+config:
+  definition: index=my_index search things
 ```
 
 ### Reports

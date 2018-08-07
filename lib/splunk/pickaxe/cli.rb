@@ -15,6 +15,7 @@ module Splunk
           Alerts::DIR,
           Dashboards::DIR,
           EventTypes::DIR,
+          Macros::DIR,
           Reports::DIR,
           Tags::DIR,
           FieldExtractions::DIR

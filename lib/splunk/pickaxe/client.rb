@@ -3,6 +3,7 @@
 require 'splunk/pickaxe/objects/alerts'
 require 'splunk/pickaxe/objects/dashboards'
 require 'splunk/pickaxe/objects/eventtypes'
+require 'splunk/pickaxe/objects/macros'
 require 'splunk/pickaxe/objects/reports'
 require 'splunk/pickaxe/objects/tags'
 require 'splunk/pickaxe/objects/field_extractions'
@@ -10,7 +11,7 @@ require 'splunk/pickaxe/objects/field_extractions'
 module Splunk
   module Pickaxe
     class Client
-      attr_reader :service, :alerts, :dashboards, :eventypes, :reports, :tags, :field_extractions
+      attr_reader :service, :alerts, :dashboards, :eventypes, :macros, :reports, :tags, :field_extractions
 
       def initialize(service, environment, config, args)
         @service = service
@@ -19,6 +20,7 @@ module Splunk
         @alerts = Alerts.new service, environment, config
         @dashboards = Dashboards.new service, environment, config
         @eventtypes = EventTypes.new service, environment, config
+        @macros = Macros.new service, environment, config
         @reports = Reports.new service, environment, config
         @tags = Tags.new service, environment, config
         @field_extractions = FieldExtractions.new service, environment, config
@@ -28,6 +30,7 @@ module Splunk
         @alerts.sync
         @dashboards.sync
         @eventtypes.sync
+        @macros.sync
         @reports.sync
         @tags.sync
         @field_extractions.sync
@@ -39,6 +42,7 @@ module Splunk
         @alerts.save overwrite
         @dashboards.save overwrite
         @eventtypes.save overwrite
+        @macros.save overwrite
         @reports.save overwrite
         # splunk-sdk doesn't seem to support iterating tags
         @field_extractions.save overwrite

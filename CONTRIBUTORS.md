@@ -4,3 +4,4 @@ Bryan Baugher
 Kyle Witczak
 Billy Rhoades
 Jon Fewins
+Dennis Patterson
