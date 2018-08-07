@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.5.0 - 08-07-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=7&state=closed)
+----------------------------------------------------------------------------------------------
+
+  * [Feature] [Issue-17](https://github.com/cerner/splunk-pickaxe/issues/17) : Support search macros
+
 [2.4.0 - 02-26-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=5&state=closed)
 ----------------------------------------------------------------------------------------------
 
