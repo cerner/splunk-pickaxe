@@ -7,9 +7,11 @@ module Splunk
     class Config
       CONFIG_FILE ||= '.pickaxe.yml'
 
+      SHARING_DEFAULT = 'app'
+
       DEFAULTS ||= {
         'namespace' => {
-          'sharing' => 'app'
+          'sharing' => SHARING_DEFAULT
         },
         'environments' => {
         },
@@ -27,7 +29,6 @@ module Splunk
       attr_reader :namespace, :environment, :execution_path, :emails, :url, :env_config
 
       def initialize(config, environment, execution_path)
-        raise "Config must have a 'namespace / app' config" unless config['namespace'].key?('app')
         raise "Environment [#{environment}] is not configured" unless config['environments'].has_key?(environment)
 
         @execution_path = execution_path
@@ -41,18 +42,32 @@ module Splunk
           @emails = config['emails']
           @url = env_config
           @env_config = { 'url' => @url, 'emails' => @emails }
+
+          # Convert namespace config hash to hash with symbols for keys
+          namespace_config = config['namespace'].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
+          @namespace = Splunk.namespace(namespace_config)
         elsif env_config.is_a?(Hash)
           raise "url config is required for environment [#{environment}]" unless env_config.has_key?('url')
           @url = env_config['url']
           @emails = env_config.has_key?('emails') ? env_config['emails'] : config['emails']
           @env_config = env_config
+
+          # If the environment config has namespace use it otherwise fallback to root config
+          if env_config.has_key?('namespace')
+            raise "Environment config must have a 'namespace / app' config" unless env_config['namespace'].key?('app')
+            namespace_config = env_config['namespace']
+            namespace_config['sharing'] = SHARING_DEFAULT unless namespace_config.has_key?('sharing')
+          else
+            raise "Config must have a 'namespace / app' config" unless config['namespace'].key?('app')
+            namespace_config = config['namespace']
+          end
+
+          # Convert namespace config hash to hash with symbols for keys
+          @namespace = Splunk.namespace(namespace_config.each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; })
         else
           raise "Unexepcted value for environment [#{environment}] config. Expected String or Hash, saw #{config['environments'][environment]}"
         end
 
-        # Convert namespace config hash to hash with symbols for keys
-        namespace_config = config['namespace'].each_with_object({}) { |(k, v), memo| memo[k.to_sym] = v; }
-        @namespace = Splunk.namespace(namespace_config)
       end
 
       private
