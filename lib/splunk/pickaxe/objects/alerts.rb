@@ -26,7 +26,11 @@ module Splunk
 
       def name(entity)
         # The alert name contains the environment name
-        "#{entity['name']} [#{environment.capitalize}]"
+        if splunk_config(entity)['pickaxe.environment.in.name']
+          return "#{entity['name']} [#{environment.capitalize}]"
+        end
+
+        entity['name']
       end
 
       def splunk_config(entity_yaml)
@@ -41,6 +45,9 @@ module Splunk
 
       def alert_defaults
         {
+          # Default to include the environment name in the alert name
+          'pickaxe.environment.in.name' => true,
+
           # Who to email
           'action.email.to' => pickaxe_config.emails.join(','),
 

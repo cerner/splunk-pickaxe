@@ -93,6 +93,10 @@ You can override these defaults or any other property by specifying the property
 under the `config` section. [This doc](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTsearch#saved.2Fsearches.2F.7Bname.7D)
 contains all the properties for an alert.
 
+By default the alert name will have the splunk environment name appended
+to it to differentiate its alert from others. This can be disabled in the
+alert's config by setting `pickaxe.environment.in.name` to `false`.
+
 #### Common Overrides
 
  * To tweak the schedule set `cron_schedule` in the `config` section. By default its setup to run every hour. This should be a cron value (i.e. `0 10 * * 1` or run every Monday at 10am)
@@ -157,6 +161,10 @@ It will be populated with the alert defaults which includes,
 You can override these defaults or any other property by specifying the property
 under the `config` section. [This doc](http://docs.splunk.com/Documentation/Splunk/latest/RESTREF/RESTsearch#saved.2Fsearches.2F.7Bname.7D)
 contains all the properties for an report.
+
+By default the report name will have the splunk environment name appended
+to it to differentiate its report from others. This can be disabled in the
+report's config by setting `pickaxe.environment.in.name` to `false`.
 
 #### Common Overrides
 

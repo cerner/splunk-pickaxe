@@ -70,11 +70,11 @@ module Splunk
 
       def create(entity)
         entity_collection = Splunk::Collection.new service, splunk_resource
-        entity_collection.create(name(entity), splunk_config(entity))
+        entity_collection.create(name(entity), remove_pickaxe_config(splunk_config(entity)))
       end
 
       def update(splunk_entity, entity)
-        splunk_entity.update(splunk_config(entity))
+        splunk_entity.update(remove_pickaxe_config(splunk_config(entity)))
       end
 
       def find(entity)
@@ -146,6 +146,10 @@ module Splunk
 
       def entity_file_extensions
         ['.yml', '.yaml']
+      end
+
+      def remove_pickaxe_config config
+        config.select{|key, value| !key.start_with?('pickaxe') }
       end
 
       def splunk_resource

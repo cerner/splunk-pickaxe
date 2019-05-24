@@ -25,7 +25,11 @@ module Splunk
 
       def name(entity)
         # The report name contains the environment name
-        "#{entity['name']} [#{environment.capitalize}]"
+        if splunk_config(entity)['pickaxe.environment.in.name']
+          return "#{entity['name']} [#{environment.capitalize}]"
+        end
+
+        entity['name']
       end
 
       def splunk_config(entity_yaml)
@@ -40,6 +44,9 @@ module Splunk
 
       def report_defaults
         {
+          # Default to include the environment name in the report name
+          'pickaxe.environment.in.name' => true,
+
           # Who to email
           'action.email.to' => pickaxe_config.emails.join(','),
 
