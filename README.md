@@ -1,7 +1,7 @@
 Splunk-Pickaxe
 ==============
 
-[![Build Status](https://travis-ci.org/cerner/splunk-pickaxe.svg?branch=master)](https://travis-ci.org/cerner/splunk-pickaxe)
+[![Build Status](https://travis-ci.com/cerner/splunk-pickaxe.svg?branch=master)](https://travis-ci.com/cerner/splunk-pickaxe)
 
 A tool for serializing and syncing your repo of Splunk objects across Splunk instances.
 
