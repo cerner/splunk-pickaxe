@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.6.0 - 05-24-2019](https://github.com/cerner/splunk-pickaxe/issues?milestone=8&state=closed)
+----------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-21](https://github.com/cerner/splunk-pickaxe/issues/21) : Updating a report creates a new one with [Environment] name on it
+
 [2.5.0 - 08-07-2018](https://github.com/cerner/splunk-pickaxe/issues?milestone=7&state=closed)
 ----------------------------------------------------------------------------------------------
 
