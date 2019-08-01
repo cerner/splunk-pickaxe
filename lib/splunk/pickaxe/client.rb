@@ -38,14 +38,15 @@ module Splunk
 
       def save_all
         overwrite = @args.fetch(:overwrite, false)
+        local_save = @args.fetch(:local_save, false)
 
-        @alerts.save overwrite
-        @dashboards.save overwrite
-        @eventtypes.save overwrite
-        @macros.save overwrite
-        @reports.save overwrite
+        @alerts.save overwrite, local_save
+        @dashboards.save overwrite, local_save
+        @eventtypes.save overwrite, local_save
+        @macros.save overwrite, local_save
+        @reports.save overwrite, local_save
         # splunk-sdk doesn't seem to support iterating tags
-        @field_extractions.save overwrite
+        @field_extractions.save overwrite, local_save
       end
     end
   end

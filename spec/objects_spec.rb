@@ -183,6 +183,7 @@ describe Splunk::Pickaxe::Objects do
     let(:splunk_entity1) { double 'splunk_entity1' }
     let(:splunk_entity2) { double 'splunk_entity2' }
     let(:overwrite) { double 'overwrite' }
+    let(:local_save) { double 'local_save' }
 
     before do
       entity_dir = File.join(execution_path, 'my-dir')
@@ -194,17 +195,17 @@ describe Splunk::Pickaxe::Objects do
     end
 
     it 'calls save_config on every object in the collection' do
-      expect(subject).to receive(:save_config).with(splunk_entity1, false)
-      expect(subject).to receive(:save_config).with(splunk_entity2, false)
+      expect(subject).to receive(:save_config).with(splunk_entity1, false, false)
+      expect(subject).to receive(:save_config).with(splunk_entity2, false, false)
 
-      subject.save(false)
+      subject.save(false, false)
     end
 
-    it 'passes the overwrite argument to every object in the collection' do
-      expect(subject).to receive(:save_config).with(splunk_entity1, overwrite)
-      expect(subject).to receive(:save_config).with(splunk_entity2, overwrite)
+    it 'passes both the overwrite and local_save argument to every object in the collection' do
+      expect(subject).to receive(:save_config).with(splunk_entity1, overwrite, local_save)
+      expect(subject).to receive(:save_config).with(splunk_entity2, overwrite, local_save)
 
-      subject.save(overwrite)
+      subject.save(overwrite, local_save)
     end
   end
 
@@ -236,14 +237,30 @@ describe Splunk::Pickaxe::Objects do
       it 'does not write the config' do
         expect(File).to_not receive(:write)
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
       end
 
       context 'and overwrite is true' do
         it 'writes the config' do
           expect(File).to receive(:write)
 
-          subject.save_config(entity, true)
+          subject.save_config(entity, true, false)
+        end
+      end
+
+      context 'and local_save is passed' do
+        it 'does not write the config' do
+          expect(File).to_not receive(:write)
+
+          subject.save_config(entity, false, true)
+        end
+      end
+
+      context 'when overwrite and local_save are passed' do
+        it 'writes the config' do
+          expect(File).to receive(:write)
+
+          subject.save_config(entity, true, true)
         end
       end
     end
@@ -257,7 +274,7 @@ describe Splunk::Pickaxe::Objects do
       it 'gets all entity keys' do
         expect(subject).to receive(:splunk_entity_keys).and_return([])
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
       end
 
       it 'fetches every value for each entity key from the entity' do
@@ -265,7 +282,7 @@ describe Splunk::Pickaxe::Objects do
           expect(entity).to receive(:fetch).with(k)
         end
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
       end
 
       it 'combines all entity key/values and writes to yaml' do
@@ -274,7 +291,15 @@ describe Splunk::Pickaxe::Objects do
           'config' => entity_config
         }.to_yaml)
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
+      end
+
+      context 'and local_save is passed' do
+        it 'does not write the config' do
+          expect(File).to_not receive(:write)
+
+          subject.save_config(entity, false, true)
+        end
       end
     end
   end

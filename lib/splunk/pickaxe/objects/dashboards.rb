@@ -44,10 +44,21 @@ module Splunk
         ['.xml']
       end
 
-      def save_config(splunk_entity, overwrite)
+      def save_config(splunk_entity, overwrite, local_save)
         file_path = entity_file_path splunk_entity
 
-        puts "- #{splunk_entity['label']}"
+        if local_save
+          if File.exist?(file_path)
+            puts "- #{splunk_entity['label']}"
+            write_to_file(file_path, overwrite, splunk_entity)
+          end
+        else
+          puts "- #{splunk_entity['label']}"
+          write_to_file(file_path, overwrite, splunk_entity)
+        end
+      end
+
+      def write_to_file(file_path, overwrite, splunk_entity)
         if overwrite || !File.exist?(file_path)
           overwritten = overwrite && File.exist?(file_path)
 

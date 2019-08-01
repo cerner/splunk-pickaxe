@@ -77,7 +77,7 @@ describe Splunk::Pickaxe::FieldExtractions do
         allow(File).to receive(:exist?).and_return(true)
         expect(File).to_not receive(:write)
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
       end
 
       context 'and overwrite is true' do
@@ -85,7 +85,25 @@ describe Splunk::Pickaxe::FieldExtractions do
           allow(File).to receive(:exist?).and_return(true)
           expect(File).to receive(:write)
 
-          subject.save_config(entity, true)
+          subject.save_config(entity, true, false)
+        end
+      end
+
+      context 'and local_save is passed' do
+        it 'does not write the config' do
+          allow(File).to receive(:exist?).and_return(true)
+          expect(File).to_not receive(:write)
+
+          subject.save_config(entity, false, true)
+        end
+      end
+
+      context 'when overwrite and local_save are passed' do
+        it 'writes the config' do
+          allow(File).to receive(:exist?).and_return(true)
+          expect(File).to receive(:write)
+
+          subject.save_config(entity, true, true)
         end
       end
     end
@@ -96,7 +114,7 @@ describe Splunk::Pickaxe::FieldExtractions do
           expect(entity).to receive(:fetch).with(k).and_return(entity_config[k])
         end
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
       end
 
       it 'writes transformed config to the file' do
@@ -105,7 +123,15 @@ describe Splunk::Pickaxe::FieldExtractions do
           'config' => expected_entity_config
         }.to_yaml)
 
-        subject.save_config(entity, false)
+        subject.save_config(entity, false, false)
+      end
+
+      context 'and local_save is passed' do
+        it 'does not write the config' do
+          expect(File).to_not receive(:write)
+
+          subject.save_config(entity, false, true)
+        end
       end
     end
   end

@@ -61,6 +61,7 @@ module Splunk
       option :password, type: :string, desc: 'The password to login to splunk with. If this is not provided it will ask for a password'
       option :repo_path, type: :string, desc: 'The path to the repo. If this is not specified it is assumed you are executing from within the repo'
       option :overwrite, type: :boolean, desc: 'Overwrite any local Splunk objects which differ from remote objects with the same name.'
+      option :local_save, type: :boolean, desc: 'Only retrieve local Splunk objects from remote'
       def save(environment)
         cli = HighLine.new
 
