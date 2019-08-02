@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.7.0 - 08-02-2019](https://github.com/cerner/splunk-pickaxe/issues?milestone=9&state=closed)
+----------------------------------------------------------------------------------------------
+
+  * [Feature] [Issue-23](https://github.com/cerner/splunk-pickaxe/issues/23) : Add local_save tag to allow only local objects to be saved
+
 [2.6.0 - 05-24-2019](https://github.com/cerner/splunk-pickaxe/issues?milestone=8&state=closed)
 ----------------------------------------------------------------------------------------------
 
