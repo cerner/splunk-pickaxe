@@ -46,19 +46,19 @@ describe Splunk::Pickaxe::Client do
 
     it 'calls #save on all objects except tag' do
       classes.each do |clazz|
-        expect(class_to_double[clazz]).to receive(:save).with(false)
+        expect(class_to_double[clazz]).to receive(:save).with(false, false)
       end
 
       subject.save_all
     end
 
-    context 'when overwrite is not in args' do
+    context 'when overwrite and local_save are not in args' do
       let(:args) { { user: 'user', password: 'pass' } }
       subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
 
       it 'calls #save with false' do
         classes.each do |clazz|
-          expect(class_to_double[clazz]).to receive(:save).with(false)
+          expect(class_to_double[clazz]).to receive(:save).with(false, false)
         end
 
         subject.save_all
@@ -70,7 +70,33 @@ describe Splunk::Pickaxe::Client do
 
         it 'calls #save with overwrite\'s value' do
         classes.each do |clazz|
-          expect(class_to_double[clazz]).to receive(:save).with(true)
+          expect(class_to_double[clazz]).to receive(:save).with(true, false)
+        end
+
+        subject.save_all
+        end
+      end
+
+      context 'when local_save is in args' do
+        let(:args) { { user: 'user', password: 'pass', local_save: true } }
+        subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
+
+        it 'calls #save with overwrite\'s value' do
+        classes.each do |clazz|
+          expect(class_to_double[clazz]).to receive(:save).with(false, true)
+        end
+
+        subject.save_all
+        end
+      end
+
+      context 'when overwrite and local_save are in args' do
+        let(:args) { { user: 'user', password: 'pass', overwrite: true, local_save: true } }
+        subject { Splunk::Pickaxe::Client.new(service, environment, config, args) }
+
+        it 'calls #save with overwrite\'s value' do
+        classes.each do |clazz|
+          expect(class_to_double[clazz]).to receive(:save).with(true, true)
         end
 
         subject.save_all

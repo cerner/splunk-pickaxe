@@ -89,32 +89,27 @@ module Splunk
         end
       end
 
-      def save(overwrite)
+      def save(overwrite, local_save)
         puts "Saving all #{entity_dir.capitalize}"
 
         dir = File.join(pickaxe_config.execution_path, entity_dir)
         Dir.mkdir dir unless Dir.exist? dir
 
         Splunk::Collection.new(service, splunk_resource)
-                          .map { |e| save_config e, overwrite }
+                          .map { |e| save_config e, overwrite, local_save }
       end
 
-      def save_config(splunk_entity, overwrite)
+      def save_config(splunk_entity, overwrite, local_save)
         file_path = entity_file_path splunk_entity
 
-        puts "- #{splunk_entity.name}"
-        if overwrite || !File.exist?(file_path)
-          overwritten = overwrite && File.exist?(file_path)
-
-          File.write(file_path, {
-            'name' => splunk_entity.name,
-            'config' => splunk_entity_keys
-                          .map { |k| { k => splunk_entity.fetch(k) } }
-                          .reduce({}) { |memo, setting| memo.update(setting) }
-          }.to_yaml)
-          puts overwritten ? '  Overwritten' : '  Created'
+        if local_save
+          if File.exist?(file_path)
+            puts "- #{splunk_entity.name}"
+            write_to_file(file_path, overwrite, splunk_entity)
+          end
         else
-          puts '  Already exists'
+          puts "- #{splunk_entity.name}"
+          write_to_file(file_path, overwrite, splunk_entity)
         end
       end
 
@@ -170,6 +165,22 @@ module Splunk
       def entity_file_path
         # Must be implemented by child class
         nil
+      end
+
+      def write_to_file(file_path, overwrite, splunk_entity)
+        if overwrite || !File.exist?(file_path)
+          overwritten = overwrite && File.exist?(file_path)
+
+          File.write(file_path, {
+            'name' => splunk_entity.name,
+            'config' => splunk_entity_keys
+                          .map { |k| { k => splunk_entity.fetch(k) } }
+                          .reduce({}) { |memo, setting| memo.update(setting) }
+          }.to_yaml)
+          puts overwritten ? '  Overwritten' : '  Created'
+        else
+          puts '  Already exists'
+        end
       end
     end
   end
