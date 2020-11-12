@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.8.0 - 11-12-2020](https://github.com/cerner/splunk-pickaxe/issues?milestone=10&state=closed)
+-----------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-28](https://github.com/cerner/splunk-pickaxe/issues/28) : Added config to support disabling the macros.
+
 [2.7.0 - 08-02-2019](https://github.com/cerner/splunk-pickaxe/issues?milestone=9&state=closed)
 ----------------------------------------------------------------------------------------------
 
