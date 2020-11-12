@@ -1,4 +1,5 @@
 name: my_macro
 
 config:
+  disabled: <1|0> Set to 1 to disable
   definition: index=my_index search things

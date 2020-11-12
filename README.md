@@ -137,6 +137,7 @@ The name of the file should be the name of the macro. If the file is
 ```yaml
 name: MACRO_NAME
 config:
+  disabled: <1|0> Set to 1 to disable
   definition: index=my_index search things
 ```
 
