@@ -278,7 +278,10 @@ environments:
     url: https://logs-api.prod.my-splunk.com
     # Optional and will default to the root emails config
     emails:
-      - my.email@domain.com
+      - my.prod.email@domain.com
+    # Optional and will default to root namespace/app
+    namespace:
+      app: my_prod_splunk_app
 
 # Used for any environments that don't specify emails config
 emails:
