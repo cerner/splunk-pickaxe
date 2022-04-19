@@ -27,13 +27,13 @@ module Splunk
       end
 
       def sync_all
+        @macros.sync
+        @field_extractions.sync
         @alerts.sync
         @dashboards.sync
         @eventtypes.sync
-        @macros.sync
         @reports.sync
         @tags.sync
-        @field_extractions.sync
       end
 
       def save_all
