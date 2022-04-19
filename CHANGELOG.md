@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+[2.9.0 - 04-19-2022](https://github.com/cerner/splunk-pickaxe/issues?milestone=11&state=closed)
+-----------------------------------------------------------------------------------------------
+
+  * [Enhancement] [Issue-31](https://github.com/cerner/splunk-pickaxe/issues/31) : Sync macros first followed by dependent knowledge objects
+
 [2.8.0 - 11-12-2020](https://github.com/cerner/splunk-pickaxe/issues?milestone=10&state=closed)
 -----------------------------------------------------------------------------------------------
 
